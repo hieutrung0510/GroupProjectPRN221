@@ -1,0 +1,130 @@
+﻿	@page
+@using DataAccess.Repostiories
+@model eButler.Pages.CategoryModel
+
+@{
+	ViewData["Title"] = "Category";
+	Layout = "~/Pages/Shared/_Layout.cshtml";
+	SupplierRepository supplierRepository = new SupplierRepository();
+}
+<!-- Start Banner Area -->
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>Shop Category page</h1>
+					<nav class="d-flex align-items-center">
+						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
+						<a href="category.html">Fashon Category</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Banner Area -->
+	<div class="container">
+		<div class="row">
+			<div class="col-xl-3 col-lg-4 col-md-5">
+				<div class="sidebar-categories">
+					<div class="head"><a class="reloadSupplier" asp-page="/Category" >Browse Supplier</a></div>
+					<ul class="main-categories">
+					<a class="loadProductSupplierBySupplierId" type="submit" asp-page="/Category">All Product</a>
+					<li class="main-nav-list">
+						<a data-toggle="collapse" href="#fruitsVegetable" aria-expanded="false" aria-controls="fruitsVegetable">
+							<span class="lnr lnr-arrow-right"></span>
+						</a>
+
+					</li>
+						@foreach (var item in Model.listSupplier)
+					   {
+						   <form method="post">
+							<input asp-for="SupplierID" type="hidden" value="@Html.ValueFor(modelItem => item.Id)">
+							<input class="loadProductSupplierBySupplierId" type="submit" value="@Html.DisplayFor(modelItem => item.Name)"/>
+						<li class="main-nav-list">
+							<a data-toggle="collapse" href="#fruitsVegetable" aria-expanded="false" aria-controls="fruitsVegetable">
+								<span class="lnr lnr-arrow-right"></span>
+							</a>
+							
+						</li>
+						   </form>
+						   
+					   }
+						
+				</div>
+				<div class="sidebar-categories">
+					<div class="head"><a class="reloadSupplier" asp-page="/Category" >Browse Product</a></div>
+					<ul class="main-categories">
+					<a class="loadProductSupplierBySupplierId" type="submit" asp-page="/Category">All Product</a>
+					<li class="main-nav-list">
+						<a data-toggle="collapse" href="#fruitsVegetable" aria-expanded="false" aria-controls="fruitsVegetable">
+							<span class="lnr lnr-arrow-right"></span>
+						</a>
+
+					</li>
+						@foreach (var item in Model.listProduct)
+					   {
+						   <form method="post">
+							<input asp-for="ProductID" type="hidden" value="@Html.ValueFor(modelItem => item.Id)">
+							<input class="loadProductSupplierBySupplierId" type="submit" value="@Html.DisplayFor(modelItem => item.Name)"/>
+						<li class="main-nav-list">
+							<a data-toggle="collapse" href="#fruitsVegetable" aria-expanded="false" aria-controls="fruitsVegetable">
+								<span class="lnr lnr-arrow-right"></span>
+							</a>
+							
+						</li>
+						   </form>
+						   
+					   }
+						
+				</div>
+				
+			</div>
+			<div class="col-xl-9 col-lg-8 col-md-7">
+				<!-- Start Filter Bar -->
+				<!-- End Filter Bar -->
+				<!-- Start Best Seller -->
+				<section class="lattest-product-area pb-40 category-list">
+					<div class="row">
+						@foreach (var item in Model.listProductSupplier)
+					   {
+						<!-- single product -->
+						<div class="col-lg-4 col-md-6">
+							<div class="single-product">
+								<img class="img-fluid" src="@Html.DisplayFor(modelItem => item.Image)" alt="">
+								<div class="product-details">
+									<h6>
+										@Html.DisplayFor(modelItem => item.Name)
+									</h6>
+									<h7>
+										@{
+											var Supplier = supplierRepository.getSupplierByID(item.SupplierId);
+										}
+										from @Html.DisplayFor(modelItem => Supplier.Name)
+									</h7>
+									<div class="price">
+                                        <h6>
+                                            @String.Format("{0:C}", item.Price)
+                                        </h6>
+									</div>
+									<div class="prd-bottom">
+                                        <form class="social-info" method="post" action="/Cart">
+                                            <input type="hidden" name="productId" value="@item.Id" />
+                                            <input type="hidden" name="quantity" value="1" />
+                                            <button type="submit" class="ti-bag social-info-btn"></button>
+                                            @Html.AntiForgeryToken()
+                                        </form>
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+					
+					</div>
+				</section>
+				<!-- End Best Seller -->
+				<!-- Start Filter Bar -->
+				<!-- End Filter Bar -->
+			</div>
+		</div>
+	</div>

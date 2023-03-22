@@ -1,0 +1,178 @@
+﻿@page
+
+@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json;
+@using BusinessLogic.Models; 
+@model eButler.Pages.CheckoutModel
+@{
+    var url = TempData["url"] as string;
+    var authen = TempData["authen"] as string;
+    double total = 0;
+
+    User currentUser = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("LOGIN_USER"));
+}
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Checkout</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">
+                        Home<span class="lnr lnr-arrow-right"></span>
+                    </a>
+                    <a href="single-product.html">Checkout</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<input id="url" value="@url" type="hidden"></input>
+<input id="authen" value="@authen" type="hidden"></input>
+
+
+<!-- End Banner Area -->
+<!--================Checkout Area =================-->
+<section class="checkout_area section_gap">
+    <div class="container">
+        <div class="billing_details">
+            <div class="row">
+                <form class="row" method="post">
+                    <div class="col-lg-8">
+                        <h3>Billing Details</h3>
+                        <div class="row contact_form"
+                             action="#"
+                             novalidate="novalidate">
+                            <div class="col-md-12 form-group p_star">
+                                <input type="text"
+                                       required
+                                       class="form-control"
+                                       id="number"
+                                       name="Phone"
+                                       placeholder="Phone" />
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <input type="text"
+                                       required
+                                       class="form-control"
+                                       id="add1"
+                                       name="Address"
+                                       placeholder="Address" />
+
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <input type="text"
+                                       required
+                                       class="form-control"
+                                       id="add1"
+                                       name="Distric"
+                                       placeholder="District" />
+                            </div>
+                            <input type="hidden" value="@(currentUser.Id)" name="HouseKeeperId" />
+                            <div class="col-md-12 form-group p_star">
+                                <input type="text"
+                                       required
+                                       class="form-control"
+                                       id="add2"
+                                       name="City"
+                                       placeholder="City" />
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <input type="text"
+                                       required
+                                       class="form-control"
+                                       id="add2"
+                                       name="Country"
+                                       placeholder="Country" />
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <textarea class="form-control"
+                                          name="message"
+                                          id="message"
+                                          rows="1"
+                                          name="Note"
+                                          placeholder="Order Notes"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="order_box">
+                            <h2>Your Order</h2>
+                            <ul class="list">
+                                <li>
+                                    <a href="#">Product <span>Total</span></a>
+                                </li>
+                                @foreach (var item in Model.Cart)
+                                {
+                                    <li>
+                                        <a href="#">
+                                            @(item.Product.Name) <span class="middle">x @(item.Quantity)</span>
+                                            <span class="last">$@(item.Product.Price * item.Quantity)</span>
+                                        </a>
+                                    </li>
+                                    @if (item != null)
+                                    {
+                                        total += item.Product.Price * item.Quantity;
+                                    }
+                                }
+                            </ul>
+                            <ul class="list list_2">
+                                <li>
+                                    <a href="#">Total <span>$@(total)</span></a>
+                                </li>
+                            </ul>
+                            <div class="payment_item active">
+                                <div>
+                                    <label for="f-option6">Paypal </label>
+                                    <img src="img/product/card.jpg" alt="" />
+                                    <div class="check"></div>
+                                </div>
+                                <p>
+                                    Pay via PayPal; you can pay with your credit card if you
+                                    don’t have a PayPal account.
+                                </p>
+                            </div>
+                            <input type="hidden" name="amount" value="@(total)" />
+                            @if (total == 0)
+                            {
+                                <button disabled class="primary-btn">Proceed to Paypal</button>
+                            }
+                            else
+                            {
+                                <button class="primary-btn">Proceed to Paypal</button>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Checkout Area =================-->
+
+<script>
+    var url = document.getElementById("url").value;
+    var authen = document.getElementById("authen").value;
+
+
+    const userAction = async () => {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': authen,
+                'Access-Control-Allow-Origin': 'no-cors'
+            }
+        });
+        //window.location = url;
+        const myJson = await response.url;
+        window.location.href = myJson;
+        //extract JSON from the http response
+        // do something with myJson
+        //console.log(myjson);
+    }
+    if (url != null && url != "") {
+        window.onload = userAction;
+    }
+
+</script>
